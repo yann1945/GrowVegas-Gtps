@@ -1,0 +1,376 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Grow Dice</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #000, #1a1a2e, #16213e);
+        }
+        .header .logo {
+            display: flex;
+            align-items: center;
+        }
+        .header .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        .header .nav {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .header .nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .header .nav a:hover {
+            text-decoration: underline;
+        }
+        .header .nav .dropdown {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            background-color: #1a1a2e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            width: 200px;
+            max-height: 300px; /* Set a max height */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        .header .nav .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .header .nav .dropdown a img {
+            height: 30px;
+            margin-right: 10px;
+            border-radius: 5px; /* Rounded corners */
+        }
+        .header .nav .dropdown a:hover {
+            background-color: #444;
+        }
+        .header .nav .dropdown::-webkit-scrollbar {
+            width: 8px;
+        }
+        .header .nav .dropdown::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        .header .nav .dropdown::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #1a1a2e, #1e3c72, #2a5298); /* Blue with purple aura */
+            border-radius: 4px;
+        }
+        .header .nav .dropdown::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #1a1a2e, #1e3c72, #2a5298); /* Blue with purple aura */
+        }
+        .header .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .header .user-info .balance {
+            margin-right: 20px;
+        }
+        .header .user-info .username {
+            display: flex;
+            align-items: center;
+        }
+        .header .user-info .username img {
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .main {
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #1a1a2e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar .online-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .sidebar .online-status i {
+            color: #4caf50;
+            margin-right: 10px;
+        }
+        .sidebar .chat-rain {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .sidebar .chat-rain .join-btn {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .sidebar .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .sidebar .chat-input {
+            display: flex;
+            align-items: center;
+        }
+        .sidebar .chat-input input {
+            flex-grow: 1;
+            padding: 5px;
+            border: none;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+        .sidebar .chat-input button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            background: linear-gradient(90deg, #000, #1a1a2e, #16213e);
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        .content .game {
+            width: 18%;
+            margin: 10px;
+            text-align: center;
+        }
+        .content .game img {
+            width: 100%;
+            border-radius: 10px; /* Rounded corners */
+        }
+        .content .game .title {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .content .game a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        .content::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #1a1a2e, #1e3c72, #2a5298); /* Blue with purple aura */
+            border-radius: 4px;
+        }
+        .content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #1a1a2e, #1e3c72, #2a5298); /* Blue with purple aura */
+        }
+        .rewards {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a1a2e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+        .rewards .reward-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .rewards .reward-item .claim-btn {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img alt="Grow Dice Logo" height="30" src="https://storage.googleapis.com/a1aa/image/2qZ0xnjrRHaHM5nEnwhu5tAA1T3r3xtRjMVYZ9fPLUW0fH4TA.jpg" width="30"/>
+            <span>GrowVegas</span>
+        </div>
+        <div class="nav">
+            <a href="#" onclick="toggleDropdown()">Games</a>
+            <div class="dropdown" id="gamesDropdown">
+                <a href="crash.html">
+                    <img alt="Crash Game" src="https://storage.googleapis.com/a1aa/image/cYWn2mEUZD7hFZij5KtotS3ZfUYFYlBiGg5KQOI7Bt9xfH4TA.jpg"/>
+                    <span>Crash</span>
+                </a>
+                <a href="roulette.html">
+                    <img alt="Roulette Game" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg"/>
+                    <span>Roulette</span>
+                </a>
+                <a href="limbo.html">
+                    <img alt="Limbo Game" src="https://storage.googleapis.com/a1aa/image/t7XPmP89THrGFxHTyuPVXySta5XdCr9lIimaTmszCMa6fD8JA.jpg"/>
+                    <span>Limbo</span>
+                </a>
+                <a href="coinflip.html">
+                    <img alt="Coin Flip Game" src="https://storage.googleapis.com/a1aa/image/LLxvd73jzqYYARh9dxOLfPzWszuxp8Ax3F37XOf9cseJffAfE.jpg"/>
+                    <span>Coin Flip</span>
+                </a>
+                <a href="towers.html">
+                    <img alt="Towers Game" src="https://storage.googleapis.com/a1aa/image/rpijWu1lnsIwFl51JfmGcxPkFfA1YVnwlvxC2n74ejXOffAfE.jpg"/>
+                    <span>Towers</span>
+                </a>
+                <a href="mines.html">
+                    <img alt="Mines Game" src="https://storage.googleapis.com/a1aa/image/JGAfkl9lQmUPYKDUTgwnqq5MHkoeN6WQ9ZiIBpyhnc6rfPwnA.jpg"/>
+                    <span>Mines</span>
+                </a>
+                <a href="unboxing.html">
+                    <img alt="Unboxing Game" src="https://storage.googleapis.com/a1aa/image/FNUKdKqeTEUkPy1RCOvq1F1lQ66a9nSpmCuZTPpRBTo3fH4TA.jpg"/>
+                    <span>Unboxing</span>
+                </a>
+                <a href="choicethecup.html">
+                    <img alt="Choice the Cup Game" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg"/>
+                    <span>Choice the Cup</span>
+                </a>
+                <a href="crosstheroad.html">
+                    <img alt="Cross the Road Game" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg"/>
+                    <span>Cross the Road</span>
+                </a>
+                <a href="tictactoereme.html">
+                    <img alt="TicTacToe Reme Game" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg"/>
+                    <span>TicTacToe Reme</span>
+                </a>
+                <a href="qeme.html">
+                    <img alt="Qeme Game" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg"/>
+                    <span>Qeme</span>
+                </a>
+                <a href="bj.html">
+                    <img alt="BJ Game" src="https://storage.googleapis.com/a1aa/image/LLxvd73jzqYYARh9dxOLfPzWszuxp8Ax3F37XOf9cseJffAfE.jpg"/>
+                    <span>BJ</span>
+                </a>
+                <a href="minesweeper.html">
+                    <img alt="Minesweeper Game" src="https://storage.googleapis.com/a1aa/image/JGAfkl9lQmUPYKDUTgwnqq5MHkoeN6WQ9ZiIBpyhnc6rfPwnA.jpg"/>
+                    <span>Minesweeper</span>
+                </a>
+            </div>
+            <a href="#" onclick="showRewards()">Rewards</a>
+            <a href="#">Affiliates</a>
+            <a href="#">Leaderboard</a>
+            <a href="#">Discord</a>
+        </div>
+        <div class="user-info">
+            <div class="balance">
+                <span id="balance">0.00</span>
+            </div>
+            <div class="username">
+                <img alt="User Avatar" height="30" src="https://storage.googleapis.com/a1aa/image/iiklvYlehMyjPqfdE0tZ8H6hJ6lqjeHrQPdYzEFEXZQNffAfE.jpg" width="30"/>
+                <span>UnnoBear</span>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="sidebar">
+            <div class="online-status">
+                <i class="fas fa-circle"></i>
+                <span>747 Online</span>
+            </div>
+            <div class="chat-rain">
+                <span>Chat Rain</span>
+                <button class="join-btn">Join</button>
+            </div>
+            <div class="chat-messages">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div class="chat-input">
+                <input placeholder="Say something" type="text"/>
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="game">
+                <a href="crash.html">
+                    <img alt="Crash Game" height="150" src="https://storage.googleapis.com/a1aa/image/cYWn2mEUZD7hFZij5KtotS3ZfUYFYlBiGg5KQOI7Bt9xfH4TA.jpg" width="200"/>
+                    <div class="title">CRASH</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="roulette.html">
+                    <img alt="Roulette Game" height="150" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg" width="200"/>
+                    <div class="title">ROULETTE</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="limbo.html">
+                    <img alt="Limbo Game" height="150" src="https://storage.googleapis.com/a1aa/image/t7XPmP89THrGFxHTyuPVXySta5XdCr9lIimaTmszCMa6fD8JA.jpg" width="200"/>
+                    <div class="title">LIMBO</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="coinflip.html">
+                    <img alt="Coin Flip Game" height="150" src="https://storage.googleapis.com/a1aa/image/LLxvd73jzqYYARh9dxOLfPzWszuxp8Ax3F37XOf9cseJffAfE.jpg" width="200"/>
+                    <div class="title">COIN FLIP</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="towers.html">
+                    <img alt="Towers Game" height="150" src="https://storage.googleapis.com/a1aa/image/rpijWu1lnsIwFl51JfmGcxPkFfA1YVnwlvxC2n74ejXOffAfE.jpg" width="200"/>
+                    <div class="title">TOWERS</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="mines.html">
+                    <img alt="Mines Game" height="150" src="https://storage.googleapis.com/a1aa/image/JGAfkl9lQmUPYKDUTgwnqq5MHkoeN6WQ9ZiIBpyhnc6rfPwnA.jpg" width="200"/>
+                    <div class="title">MINES</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="unboxing.html">
+                    <img alt="Unboxing Game" height="150" src="https://storage.googleapis.com/a1aa/image/FNUKdKqeTEUkPy1RCOvq1F1lQ66a9nSpmCuZTPpRBTo3fH4TA.jpg" width="200"/>
+                    <div class="title">UNBOXING</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="choicethecup.html">
+                    <img alt="Choice the Cup Game" height="150" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg" width="200"/>
+                    <div class="title">CHOICE THE CUP</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="crosstheroad.html">
+                    <img alt="Cross the Road Game" height="150" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg" width="200"/>
+                    <div class="title">CROSS THE ROAD</div>
+                </a>
+            </div>
+            <div class="game">
+                <a href="tictactoereme.html">
+                    <img alt="TicTacToe Reme Game" height="150" src="https://storage.googleapis.com/a1aa/image/guzsncV2spraCpCHAUf1ouAUjqTRjWUzAcQKUpjwRTp2fH4TA.jpg" width="200"/>
+                    <div class="title">TICTACTOE REME</div>
+                </a>
+            </div
